@@ -6,7 +6,7 @@
     <title>Моё приложение</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark-theme">
 <div class="mobile-app">
 
     <!-- Экран профиля -->
@@ -33,6 +33,12 @@
                 <label>день рождения</label>
                 <input type="date" id="userBirthdate" value="1993-03-30" class="input-field">
             </div>
+            
+            <!-- Кнопка переключения темы -->
+            <div class="theme-switcher">
+                <button class="btn-outline" id="themeToggleBtn">🌙 Тёмная тема</button>
+            </div>
+            
             <button class="btn-primary" id="saveProfileBtn">Сохранить</button>
 
             <!-- Разделитель и навигация внутри блока -->
@@ -134,6 +140,30 @@
                     </div>
                     <div class="habit-total" id="readingTotal">Всего сегодня: 0 мин</div>
                 </div>
+                <!-- Новая привычка: Сон -->
+                <div class="habit-item">
+                    <div class="habit-header">
+                        <span class="habit-icon">😴</span>
+                        <span class="habit-name">Сон</span>
+                    </div>
+                    <div class="habit-row">
+                        <div class="habit-value" id="sleepValue">0 ч</div>
+                        <button class="habit-plus" data-habit="sleep">+</button>
+                    </div>
+                    <div class="habit-total" id="sleepTotal">Всего сегодня: 0 ч</div>
+                </div>
+                <!-- Новая привычка: Прогулка -->
+                <div class="habit-item">
+                    <div class="habit-header">
+                        <span class="habit-icon">🚶</span>
+                        <span class="habit-name">Прогулка</span>
+                    </div>
+                    <div class="habit-row">
+                        <div class="habit-value" id="walkValue">0 мин</div>
+                        <button class="habit-plus" data-habit="walk">+</button>
+                    </div>
+                    <div class="habit-total" id="walkTotal">Всего сегодня: 0 мин</div>
+                </div>
             </div>
             <button class="btn-primary" id="saveHabitsBtn">Сохранить прогресс</button>
 
@@ -185,14 +215,36 @@
                     <div class="stats-label">чтения</div>
                 </div>
                 <div class="stats-card">
+                    <div class="stats-number" id="totalSleep">0 ч</div>
+                    <div class="stats-label">сна</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="totalWalk">0 мин</div>
+                    <div class="stats-label">прогулок</div>
+                </div>
+                <div class="stats-card">
                     <div class="stats-number" id="totalActions">1</div>
                     <div class="stats-label">всего действий</div>
                 </div>
             </div>
+            
+            <!-- Визуализация прогресса привычек -->
+            <div class="progress-section">
+                <div class="selector-label">Прогресс за последние 7 дней</div>
+                <div class="progress-bars" id="progressBars"></div>
+            </div>
+            
             <div class="day-selector">
                 <div class="selector-label">Выберите день</div>
                 <div class="days-week" id="daysWeek"></div>
             </div>
+            
+            <!-- Детальный просмотр за выбранный день -->
+            <div class="day-details" id="dayDetails" style="display: none;">
+                <div class="day-details-header" id="dayDetailsHeader"></div>
+                <div class="day-details-content" id="dayDetailsContent"></div>
+            </div>
+            
             <div class="day-notes">
                 <div class="notes-header" id="dayNotesHeader"></div>
                 <div class="day-notes-list" id="dayNotesList"></div>

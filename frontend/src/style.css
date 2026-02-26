@@ -4,17 +4,52 @@
     box-sizing: border-box;
 }
 
+/* Тёмная тема (по умолчанию) */
+body.dark-theme {
+    --bg-color: #0a0a0a;
+    --text-color: #fff;
+    --main-bg: #1a1a2a;
+    --secondary-bg: #0a0a1a;
+    --accent: #8A2BE2;
+    --accent-light: #9b4dff;
+    --border-color: #333;
+    --text-secondary: #888;
+    --text-muted: #666;
+    --gradient-start: #1a0a2a;
+    --gradient-end: #0d0a1a;
+    --card-bg: #0a0a1a;
+    --label-color: #b19cd9;
+}
+
+/* Светлая тема */
+body.light-theme {
+    --bg-color: #f5f5f5;
+    --text-color: #333;
+    --main-bg: #ffffff;
+    --secondary-bg: #f0f0f0;
+    --accent: #6a1b9a;
+    --accent-light: #8e24aa;
+    --border-color: #ddd;
+    --text-secondary: #666;
+    --text-muted: #999;
+    --gradient-start: #e0e0e0;
+    --gradient-end: #f5f5f5;
+    --card-bg: #ffffff;
+    --label-color: #6a1b9a;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #0a0a0a;
-    color: #fff;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Контейнер под размер телефона */
 .mobile-app {
     max-width: 480px;
     margin: 0 auto;
-    background: linear-gradient(180deg, #1a0a2a 0%, #0d0a1a 100%);
+    background: linear-gradient(180deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
     padding: 20px;
     overflow-y: auto;
 }
@@ -24,13 +59,13 @@ body {
     width: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: #1a1a2a;
+    background: var(--main-bg);
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb {
-    background: #8A2BE2;
+    background: var(--accent);
     border-radius: 4px;
-    border: 2px solid #1a1a2a;
+    border: 2px solid var(--main-bg);
 }
 
 /* Анимация экранов */
@@ -48,12 +83,12 @@ body {
 
 /* Главный фиолетовый блок */
 .main-block {
-    background: #1a1a2a;
-    border: 2px solid #8A2BE2;
+    background: var(--main-bg);
+    border: 2px solid var(--accent);
     border-radius: 25px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+    box-shadow: 0 0 20px rgba(106, 27, 154, 0.2);
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -62,7 +97,7 @@ body {
 /* Разделительная линия */
 .nav-divider {
     height: 2px;
-    background: #8A2BE2;
+    background: var(--accent);
     margin: 20px 0;
     opacity: 0.5;
     width: 100%;
@@ -85,11 +120,11 @@ body {
     padding: 8px;
     background: none;
     border: none;
-    color: #666;
+    color: var(--text-muted);
     cursor: pointer;
 }
 .inner-nav .nav-item.active {
-    color: #8A2BE2;
+    color: var(--accent);
 }
 .nav-icon {
     font-size: 24px;
@@ -108,20 +143,20 @@ body {
 }
 .avatar-section h2 {
     font-size: 24px;
-    color: #fff;
+    color: var(--text-color);
     margin-top: 5px;
 }
 .avatar {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #8A2BE2, #6a0dad);
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 40px;
-    border: 4px solid #8A2BE2;
-    box-shadow: 0 0 30px rgba(138, 43, 226, 0.4);
+    border: 4px solid var(--accent);
+    box-shadow: 0 0 30px rgba(106, 27, 154, 0.4);
     overflow: hidden;
 }
 .avatar img {
@@ -135,6 +170,12 @@ body {
     margin: 0 auto;
 }
 
+/* Переключатель темы */
+.theme-switcher {
+    margin: 15px 0;
+    text-align: center;
+}
+
 /* Общие элементы */
 .form-group {
     display: flex;
@@ -144,7 +185,7 @@ body {
 }
 .form-group label {
     font-size: 12px;
-    color: #b19cd9;
+    color: var(--label-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
@@ -152,25 +193,25 @@ body {
 .input-field {
     width: 100%;
     padding: 15px;
-    border: 2px solid #333;
+    border: 2px solid var(--border-color);
     border-radius: 16px;
-    background: #0a0a1a;
-    color: #fff;
+    background: var(--secondary-bg);
+    color: var(--text-color);
     font-size: 16px;
     resize: vertical;
     min-height: 60px;
 }
 .input-field:focus {
     outline: none;
-    border-color: #8A2BE2;
-    box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(106, 27, 154, 0.3);
 }
 .btn-primary {
     width: 100%;
     padding: 16px;
     border: none;
     border-radius: 16px;
-    background: linear-gradient(135deg, #8A2BE2, #6a0dad);
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
     color: #fff;
     font-size: 16px;
     font-weight: 600;
@@ -179,18 +220,18 @@ body {
 }
 .btn-outline {
     padding: 12px 20px;
-    border: 2px solid #8A2BE2;
+    border: 2px solid var(--accent);
     border-radius: 16px;
     background: transparent;
-    color: #8A2BE2;
+    color: var(--accent);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
 }
 .btn-outline:hover,
 .btn-outline.active {
-    background: #8A2BE2;
-    color: #000;
+    background: var(--accent);
+    color: #fff;
 }
 
 /* Заметки */
@@ -210,8 +251,8 @@ body {
     margin-top: 20px;
 }
 .note-item {
-    background: #0a0a1a;
-    border: 2px solid #8A2BE2;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
     border-radius: 20px;
     padding: 20px;
 }
@@ -224,7 +265,7 @@ body {
 .note-title {
     font-size: 18px;
     font-weight: 600;
-    color: #8A2BE2;
+    color: var(--accent);
 }
 .note-actions button {
     background: none;
@@ -232,14 +273,14 @@ body {
     font-size: 16px;
     cursor: pointer;
     margin-left: 8px;
-    color: #fff;
+    color: var(--text-color);
     opacity: 0.7;
 }
 .note-actions button:hover {
     opacity: 1;
 }
 .note-content {
-    color: #ccc;
+    color: var(--text-secondary);
     line-height: 1.6;
     margin-bottom: 12px;
 }
@@ -248,11 +289,11 @@ body {
     margin: 10px 0;
 }
 .note-content li {
-    color: #fff;
+    color: var(--text-color);
 }
 .note-date {
     font-size: 12px;
-    color: #888;
+    color: var(--text-muted);
 }
 
 /* Привычки */
@@ -265,11 +306,11 @@ body {
 .today-label {
     font-size: 24px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-color);
 }
 .today-date {
     font-size: 18px;
-    color: #888;
+    color: var(--text-muted);
 }
 .habits-list {
     display: flex;
@@ -278,8 +319,8 @@ body {
     margin-bottom: 10px;
 }
 .habit-item {
-    background: #0a0a1a;
-    border: 2px solid #8A2BE2;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
     border-radius: 20px;
     padding: 15px;
 }
@@ -295,7 +336,7 @@ body {
 .habit-name {
     font-size: 18px;
     font-weight: 600;
-    color: #fff;
+    color: var(--text-color);
 }
 .habit-row {
     display: flex;
@@ -306,10 +347,10 @@ body {
 .habit-value {
     flex: 1;
     padding: 10px 15px;
-    background: #1a1a2a;
-    border: 2px solid #333;
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
     border-radius: 16px;
-    color: #b19cd9;
+    color: var(--label-color);
     font-size: 18px;
 }
 .habit-plus {
@@ -317,16 +358,16 @@ body {
     height: 50px;
     border: none;
     border-radius: 16px;
-    background: #8A2BE2;
+    background: var(--accent);
     color: #fff;
     font-size: 24px;
     cursor: pointer;
 }
 .habit-plus:hover {
-    background: #9b4dff;
+    background: var(--accent-light);
 }
 .habit-total {
-    color: #888;
+    color: var(--text-muted);
     font-size: 14px;
     text-align: right;
 }
@@ -334,30 +375,116 @@ body {
 /* Статистика */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
     margin-bottom: 25px;
 }
 .stats-card {
-    background: #0a0a1a;
-    border: 2px solid #8A2BE2;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
     border-radius: 20px;
-    padding: 30px 5px;
+    padding: 15px 5px;
     text-align: center;
 }
 .stats-number {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
-    color: #8A2BE2;
+    color: var(--accent);
     margin-bottom: 5px;
 }
 .stats-label {
-    font-size: 10px;
-    color: #b19cd9;
+    font-size: 9px;
+    color: var(--label-color);
     text-transform: lowercase;
 }
 .stats-label:first-letter {
     text-transform: uppercase;
+}
+
+/* Визуализация прогресса */
+.progress-section {
+    margin-bottom: 25px;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    padding: 15px;
+}
+.progress-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.progress-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.progress-icon {
+    font-size: 20px;
+    min-width: 40px;
+}
+.progress-label {
+    font-size: 14px;
+    min-width: 80px;
+    color: var(--text-color);
+}
+.progress-bar-container {
+    flex: 1;
+    height: 20px;
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    width: 0%;
+    transition: width 0.3s;
+}
+.progress-value {
+    font-size: 14px;
+    min-width: 50px;
+    text-align: right;
+    color: var(--accent);
+}
+
+/* Детальный просмотр за день */
+.day-details {
+    margin-bottom: 20px;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    padding: 15px;
+}
+.day-details-header {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+.day-details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.day-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.day-detail-item:last-child {
+    border-bottom: none;
+}
+.detail-habit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.detail-value {
+    font-weight: 600;
+    color: var(--accent);
 }
 
 /* Календарь дней недели */
@@ -365,7 +492,7 @@ body {
     margin-bottom: 20px;
 }
 .selector-label {
-    color: #8A2BE2;
+    color: var(--accent);
     font-weight: 700;
     margin-bottom: 10px;
     font-size: 14px;
@@ -377,8 +504,8 @@ body {
 .day-btn {
     flex: 1;
     padding: 10px 0;
-    background: #8A2BE2;
-    border: 2px solid #9b4dff;
+    background: var(--accent);
+    border: 2px solid var(--accent-light);
     border-radius: 16px;
     color: #fff;
     text-align: center;
@@ -387,22 +514,22 @@ body {
     cursor: pointer;
 }
 .day-btn:hover {
-    background: #9b4dff;
+    background: var(--accent-light);
 }
 .day-btn.active {
     background: #fff;
-    color: #8A2BE2;
+    color: var(--accent);
 }
 
 /* Заметки за день */
 .day-notes {
-    background: #0a0a1a;
-    border: 2px solid #8A2BE2;
+    background: var(--card-bg);
+    border: 2px solid var(--accent);
     border-radius: 20px;
     padding: 15px;
 }
 .notes-header {
-    color: #8A2BE2;
+    color: var(--accent);
     font-weight: 600;
     margin-bottom: 15px;
 }
@@ -415,8 +542,8 @@ body {
 }
 .day-note-item {
     position: relative;
-    background: #1a1a2a;
-    border: 2px solid #333;
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
     border-radius: 16px;
     padding: 12px 15px;
     display: flex;
@@ -429,7 +556,7 @@ body {
     align-items: center;
 }
 .note-time {
-    color: #888;
+    color: var(--text-muted);
     font-size: 11px;
 }
 .delete-day-note {
@@ -458,10 +585,10 @@ body {
 .new-day-note textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #333;
+    border: 2px solid var(--border-color);
     border-radius: 16px;
-    background: #1a1a2a;
-    color: #fff;
+    background: var(--secondary-bg);
+    color: var(--text-color);
     resize: vertical;
     min-height: 45px;
     max-height: 150px;
@@ -471,7 +598,7 @@ body {
     padding: 12px 20px;
     border: none;
     border-radius: 16px;
-    background: #8A2BE2;
+    background: var(--accent);
     color: #fff;
     font-weight: 600;
     cursor: pointer;
