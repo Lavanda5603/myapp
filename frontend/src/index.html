@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моё приложение</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="mobile-app">
+
+    <!-- Экран профиля -->
+    <section id="profile-screen" class="screen active">
+        <div class="main-block">
+            <div class="avatar-section">
+                <div class="avatar" id="avatarPreview">
+                    <img id="avatarImage" src="" alt="avatar" style="display: none;">
+                    <span id="avatarPlaceholder">📷</span>
+                </div>
+                <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                <button class="btn-outline btn-wide" id="changeAvatarBtn">Изменить фото</button>
+                <h2 id="profileName">Иван Петров</h2>
+            </div>
+            <div class="form-group">
+                <label>имя</label>
+                <input type="text" id="userName" value="Иван Петров" class="input-field">
+            </div>
+            <div class="form-group">
+                <label>о себе</label>
+                <textarea id="userBio" class="input-field" rows="3">Типа программист</textarea>
+            </div>
+            <div class="form-group">
+                <label>день рождения</label>
+                <input type="date" id="userBirthdate" value="1993-03-30" class="input-field">
+            </div>
+            <button class="btn-primary" id="saveProfileBtn">Сохранить</button>
+
+            <!-- Разделитель и навигация внутри блока -->
+            <div class="nav-divider"></div>
+            <nav class="inner-nav">
+                <button class="nav-item active" data-screen="profile-screen">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Профиль</span>
+                </button>
+                <button class="nav-item" data-screen="notes-screen">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Заметки</span>
+                </button>
+                <button class="nav-item" data-screen="habits-screen">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-text">Привычки</span>
+                </button>
+                <button class="nav-item" data-screen="stats-screen">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Статистика</span>
+                </button>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Экран заметок -->
+    <section id="notes-screen" class="screen">
+        <div class="main-block">
+            <input type="text" id="noteTitle" placeholder="Заголовок" class="input-field" style="margin-bottom: 15px;">
+            <textarea id="noteText" placeholder="Текст заметки..." class="input-field" rows="4"></textarea>
+            <div class="list-type-selector">
+                <button class="btn-outline active" data-type="bullet">• Маркированный список</button>
+                <button class="btn-outline" data-type="number">1. Нумерованный список</button>
+            </div>
+            <button class="btn-primary" id="addNoteBtn">Добавить заметку</button>
+            <div class="notes-list" id="notesList"></div>
+
+            <!-- Разделитель и навигация внутри блока -->
+            <div class="nav-divider"></div>
+            <nav class="inner-nav">
+                <button class="nav-item" data-screen="profile-screen">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Профиль</span>
+                </button>
+                <button class="nav-item active" data-screen="notes-screen">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Заметки</span>
+                </button>
+                <button class="nav-item" data-screen="habits-screen">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-text">Привычки</span>
+                </button>
+                <button class="nav-item" data-screen="stats-screen">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Статистика</span>
+                </button>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Экран привычек -->
+    <section id="habits-screen" class="screen">
+        <div class="main-block">
+            <div class="today-block">
+                <span class="today-label">Сегодня</span>
+                <span class="today-date" id="todayDate"></span>
+            </div>
+            <div class="habits-list" id="habitsList">
+                <div class="habit-item">
+                    <div class="habit-header">
+                        <span class="habit-icon">💧</span>
+                        <span class="habit-name">Вода</span>
+                    </div>
+                    <div class="habit-row">
+                        <div class="habit-value" id="waterValue">0.0 л</div>
+                        <button class="habit-plus" data-habit="water">+</button>
+                    </div>
+                    <div class="habit-total" id="waterTotal">Всего сегодня: 0.0 л</div>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-header">
+                        <span class="habit-icon">🏃</span>
+                        <span class="habit-name">Спорт</span>
+                    </div>
+                    <div class="habit-row">
+                        <div class="habit-value" id="sportValue">0 мин</div>
+                        <button class="habit-plus" data-habit="sport">+</button>
+                    </div>
+                    <div class="habit-total" id="sportTotal">Всего сегодня: 0 мин</div>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-header">
+                        <span class="habit-icon">📚</span>
+                        <span class="habit-name">Чтение</span>
+                    </div>
+                    <div class="habit-row">
+                        <div class="habit-value" id="readingValue">0 мин</div>
+                        <button class="habit-plus" data-habit="reading">+</button>
+                    </div>
+                    <div class="habit-total" id="readingTotal">Всего сегодня: 0 мин</div>
+                </div>
+            </div>
+            <button class="btn-primary" id="saveHabitsBtn">Сохранить прогресс</button>
+
+            <!-- Разделитель и навигация внутри блока -->
+            <div class="nav-divider"></div>
+            <nav class="inner-nav">
+                <button class="nav-item" data-screen="profile-screen">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Профиль</span>
+                </button>
+                <button class="nav-item" data-screen="notes-screen">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Заметки</span>
+                </button>
+                <button class="nav-item active" data-screen="habits-screen">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-text">Привычки</span>
+                </button>
+                <button class="nav-item" data-screen="stats-screen">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Статистика</span>
+                </button>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Экран статистики -->
+    <section id="stats-screen" class="screen">
+        <div class="main-block">
+            <div class="stats-grid">
+                <div class="stats-card">
+                    <div class="stats-number" id="streakDays">0</div>
+                    <div class="stats-label">дней подряд</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="totalWater">0.0 л</div>
+                    <div class="stats-label">всего воды</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="totalNotes">1</div>
+                    <div class="stats-label">заметок</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="totalSport">0 мин</div>
+                    <div class="stats-label">спорта</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="totalReading">0 мин</div>
+                    <div class="stats-label">чтения</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="totalActions">1</div>
+                    <div class="stats-label">всего действий</div>
+                </div>
+            </div>
+            <div class="day-selector">
+                <div class="selector-label">Выберите день</div>
+                <div class="days-week" id="daysWeek"></div>
+            </div>
+            <div class="day-notes">
+                <div class="notes-header" id="dayNotesHeader"></div>
+                <div class="day-notes-list" id="dayNotesList"></div>
+                <div class="new-day-note">
+                    <textarea id="newDayNote" placeholder="Новая заметка за этот день..." class="input-field" rows="2"></textarea>
+                    <button id="addDayNoteBtn" class="btn-add-note">Добавить заметку</button>
+                </div>
+            </div>
+
+            <!-- Разделитель и навигация внутри блока -->
+            <div class="nav-divider"></div>
+            <nav class="inner-nav">
+                <button class="nav-item" data-screen="profile-screen">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Профиль</span>
+                </button>
+                <button class="nav-item" data-screen="notes-screen">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Заметки</span>
+                </button>
+                <button class="nav-item" data-screen="habits-screen">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-text">Привычки</span>
+                </button>
+                <button class="nav-item active" data-screen="stats-screen">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Статистика</span>
+                </button>
+            </nav>
+        </div>
+    </section>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
