@@ -10,7 +10,9 @@ let appState = {
     habits: {
         water: { value: 0, unit: 'л', total: 0, today: 0 },
         sport: { value: 0, unit: 'мин', total: 0, today: 0 },
-        reading: { value: 0, unit: 'мин', total: 0, today: 0 }
+        reading: { value: 0, unit: 'мин', total: 0, today: 0 },
+        sleep: { value: 0, unit: 'ч', total: 0, today: 0 },
+        walk: { value: 0, unit: 'мин', total: 0, today: 0 }
     },
     dayNotes: [],
     streakDays: 0,
@@ -18,7 +20,8 @@ let appState = {
     currentDate: '',
     currentFullDate: '',
     listType: 'bullet',
-    lastActiveDate: ''
+    lastActiveDate: '',
+    habitsLog: []
 };
 
 // Дни недели
@@ -83,18 +86,33 @@ document.addEventListener('DOMContentLoaded', () => {
     initNotes();
     initHabits();
     initStats();
+    initTheme();
     updateTodayDate();
     updateStatsNumbers();
     renderNotes();
     updateDayNotes();
+    initStatsDatePicker();
+    updateYearCalendar();
 });
 
 // Загружаю из localStorage
 function loadState() {
     const saved = localStorage.getItem('violetApp');
-    if (saved) {
-        const parsed = JSON.parse(saved);
-        appState = { ...appState, ...parsed };
+    if (!saved) return;
+
+    const parsed = JSON.parse(saved);
+
+    appState.profile = parsed.profile || appState.profile;
+    appState.notes = parsed.notes || [];
+    appState.dayNotes = parsed.dayNotes || [];
+    appState.streakDays = parsed.streakDays || 0;
+    appState.lastActiveDate = parsed.lastActiveDate || appState.currentFullDate;
+
+    if (parsed.habits) {
+        appState.habits = {
+            ...appState.habits,
+            ...parsed.habits
+        };
     }
 }
 
@@ -106,26 +124,45 @@ function saveState() {
 // Проверяю, не наступил ли новый день
 function checkDateChange() {
     if (appState.lastActiveDate !== appState.currentFullDate) {
+
+        // Сохраняю прошлый день в habitsLog
+        const yesterdayLog = {
+            date: appState.lastActiveDate,
+            water: appState.habits.water.today,
+            sport: appState.habits.sport.today,
+            reading: appState.habits.reading.today,
+            sleep: appState.habits.sleep.today,
+            walk: appState.habits.walk.today
+        };
+        appState.habitsLog.push(yesterdayLog);
+
+        // Сброс привычек на новый день
         appState.habits.water.today = 0;
         appState.habits.water.value = 0;
         appState.habits.sport.today = 0;
         appState.habits.sport.value = 0;
         appState.habits.reading.today = 0;
         appState.habits.reading.value = 0;
-        
+        appState.habits.sleep.today = 0;
+        appState.habits.sleep.value = 0;
+        appState.habits.walk.today = 0;
+        appState.habits.walk.value = 0;
+
+        // Проверка на streakDays
         const last = new Date(appState.lastActiveDate);
         const current = new Date(appState.currentFullDate);
         const diffTime = current - last;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 1) {
             appState.streakDays++;
         } else if (diffDays > 1) {
             appState.streakDays = 0;
         }
-        
+
         appState.lastActiveDate = appState.currentFullDate;
         saveState();
+        updateYearCalendar();
     }
 }
 
@@ -388,11 +425,21 @@ function initHabits() {
                 appState.habits.reading.value += 5;
                 appState.habits.reading.today += 5;
                 appState.habits.reading.total += 5;
+            } else if (habit === 'sleep') {
+                appState.habits.sleep.value += 1;
+                appState.habits.sleep.today += 1;
+                appState.habits.sleep.total += 1;
+            }
+            else if (habit === 'walk') {
+                appState.habits.walk.value += 15;
+                appState.habits.walk.today += 15;
+                appState.habits.walk.total += 15;
             }
             
             updateHabitsDisplay();
             saveState();
             updateStatsNumbers();
+            updateYearCalendar();
             
             return false;
         };
@@ -416,6 +463,12 @@ function updateHabitsDisplay() {
     
     document.getElementById('readingValue').innerHTML = `${appState.habits.reading.value} мин`;
     document.getElementById('readingTotal').innerHTML = `Всего сегодня: ${appState.habits.reading.today} мин`;
+
+    document.getElementById('sleepValue').innerHTML = `${appState.habits.sleep.value} ч`;
+    document.getElementById('sleepTotal').innerHTML = `Всего сегодня: ${appState.habits.sleep.today} ч`;
+
+    document.getElementById('walkValue').innerHTML = `${appState.habits.walk.value} мин`;
+    document.getElementById('walkTotal').innerHTML = `Всего сегодня: ${appState.habits.walk.today} мин`;
 }
 
 // Статистика с проверкой на пустую заметку
@@ -459,19 +512,56 @@ function initStats() {
     updateDayNotes();
 }
 
-// Обновляю заметки за день
+// Обновляю заметки за день (при клике на день недели)
 function updateDayNotes() {
     const list = document.getElementById('dayNotesList');
     const header = document.getElementById('dayNotesHeader');
+    const dayHabitsContainer = document.getElementById('dayHabits');
     
     const activeBtn = document.querySelector('.day-btn.active');
     const fullDate = activeBtn ? activeBtn.dataset.fullDate : appState.currentFullDate;
+    
+    // Синхронизирую календарь
+    const datePicker = document.getElementById('statsDatePicker');
+    if (datePicker) {
+        datePicker.value = fullDate;
+    }
     
     const [year, month, day] = fullDate.split('-');
     const displayDate = `${day}.${month}.${year}`;
     
     header.innerHTML = `Заметки за день ${displayDate}`;
     
+    // Показываю привычки за выбранный день
+    if (dayHabitsContainer) {
+        if (fullDate === appState.currentFullDate) {
+            // Сегодняшний день - показываю текущие привычки
+            dayHabitsContainer.innerHTML = `
+                💧 Вода: ${appState.habits.water.today} л<br>
+                🏃 Спорт: ${appState.habits.sport.today} мин<br>
+                📚 Чтение: ${appState.habits.reading.today} мин<br>
+                😴 Сон: ${appState.habits.sleep.today} ч<br>
+                🚶 Прогулка: ${appState.habits.walk.today} мин
+            `;
+        } else {
+            // Прошлые дни - ищу в habitsLog
+            const habitsForDay = appState.habitsLog?.find(h => h.date === fullDate);
+            
+            if (habitsForDay) {
+                dayHabitsContainer.innerHTML = `
+                    💧 Вода: ${habitsForDay.water} л<br>
+                    🏃 Спорт: ${habitsForDay.sport} мин<br>
+                    📚 Чтение: ${habitsForDay.reading} мин<br>
+                    😴 Сон: ${habitsForDay.sleep} ч<br>
+                    🚶 Прогулка: ${habitsForDay.walk} мин
+                `;
+            } else {
+                dayHabitsContainer.innerHTML = 'Нет данных привычек за этот день';
+            }
+        }
+    }
+    
+    // Заметки за выбранный день
     const notesForDay = appState.dayNotes.filter(n => n.fullDate === fullDate);
     
     if (notesForDay.length === 0) {
@@ -479,15 +569,105 @@ function updateDayNotes() {
         return;
     }
     
-list.innerHTML = notesForDay.map(note => `
-    <div class="day-note-item">
-        <div class="note-text">${note.text}</div>
-        <div class="note-footer">
-            <span class="note-time">${note.date}</span>
+    list.innerHTML = notesForDay.map(note => `
+        <div class="day-note-item">
+            <div class="note-text">${note.text}</div>
+            <div class="note-footer">
+                <span class="note-time">${note.date}</span>
+            </div>
+            <button class="delete-day-note" onclick="deleteDayNote(${note.id})">❌</button>
         </div>
-        <button class="delete-day-note" onclick="deleteDayNote(${note.id})">❌</button>
-    </div>
-`).join('');
+    `).join('');
+}
+
+// Инициализация календаря в статистике
+function initStatsDatePicker() {
+    const datePicker = document.getElementById('statsDatePicker');
+    if (!datePicker) return;
+    
+    // Устанавливаю сегодняшнюю дату
+    datePicker.value = appState.currentFullDate;
+    
+    datePicker.addEventListener('change', function() {
+        const selectedDate = this.value;
+        if (!selectedDate) return;
+        
+        // Нахожу день недели для выбранной даты
+        const date = new Date(selectedDate + 'T12:00:00');
+        const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+        const dayOfWeek = days[date.getDay()];
+        
+        appState.selectedDay = dayOfWeek;
+        
+        // Подсвечиваю нужный день недели
+        document.querySelectorAll('.day-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.day === dayOfWeek) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Обновляю отображение для выбранной даты
+        updateDayNotesForDate(selectedDate);
+    });
+}
+
+// Обновление для конкретной даты
+function updateDayNotesForDate(date) {
+    const list = document.getElementById('dayNotesList');
+    const header = document.getElementById('dayNotesHeader');
+    const dayHabitsContainer = document.getElementById('dayHabits');
+    
+    if (!list || !header) return;
+    
+    const [year, month, day] = date.split('-');
+    const displayDate = `${day}.${month}.${year}`;
+    
+    header.innerHTML = `Заметки за день ${displayDate}`;
+    
+    // Привычки за выбранный день
+    if (dayHabitsContainer) {
+        if (date === appState.currentFullDate) {
+            dayHabitsContainer.innerHTML = `
+                💧 Вода: ${appState.habits.water.today} л<br>
+                🏃 Спорт: ${appState.habits.sport.today} мин<br>
+                📚 Чтение: ${appState.habits.reading.today} мин<br>
+                😴 Сон: ${appState.habits.sleep.today} ч<br>
+                🚶 Прогулка: ${appState.habits.walk.today} мин
+            `;
+        } else {
+            const habitsForDay = appState.habitsLog?.find(h => h.date === date);
+            if (habitsForDay) {
+                dayHabitsContainer.innerHTML = `
+                    💧 Вода: ${habitsForDay.water} л<br>
+                    🏃 Спорт: ${habitsForDay.sport} мин<br>
+                    📚 Чтение: ${habitsForDay.reading} мин<br>
+                    😴 Сон: ${habitsForDay.sleep} ч<br>
+                    🚶 Прогулка: ${habitsForDay.walk} мин
+                `;
+            } else {
+                dayHabitsContainer.innerHTML = 'Нет данных привычек за этот день';
+            }
+        }
+    }
+    
+    // Заметки за выбранный день
+    const notesForDay = appState.dayNotes.filter(n => n.fullDate === date);
+    
+    if (notesForDay.length === 0) {
+        list.innerHTML = '<div class="day-note-item" style="text-align: center; color: #666;">Нет заметок за этот день</div>';
+        return;
+    }
+    
+    list.innerHTML = notesForDay.map(note => `
+        <div class="day-note-item">
+            <div class="note-text">${note.text}</div>
+            <div class="note-footer">
+                <span class="note-time">${note.date}</span>
+            </div>
+            <button class="delete-day-note" onclick="deleteDayNote(${note.id})">❌</button>
+        </div>
+    `).join('');
 }
 
 // Удаляю заметки за день
@@ -507,12 +687,63 @@ function updateStatsNumbers() {
     document.getElementById('totalNotes').innerHTML = appState.notes.length;
     document.getElementById('totalSport').innerHTML = appState.habits.sport.total + ' мин';
     document.getElementById('totalReading').innerHTML = appState.habits.reading.total + ' мин';
+    document.getElementById('totalSleep').innerHTML = appState.habits.sleep.total + ' ч';
+    document.getElementById('totalWalk').innerHTML = appState.habits.walk.total + ' мин';
     
     const totalActions = Math.floor(
         (appState.habits.water.total / 0.5) + 
         (appState.habits.sport.total / 10) + 
         (appState.habits.reading.total / 5) + 
+        appState.habits.sleep.total + 
+        (appState.habits.walk.total / 15) +
         appState.notes.length
     );
     document.getElementById('totalActions').innerHTML = totalActions;
+}
+
+// Светлая/темная тема
+function initTheme() {
+    const button = document.getElementById('themeToggle');
+
+    // Загрузка сохраненной темы
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        button.textContent = '🌞';
+    }
+
+    button.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+
+        const isLight = document.body.classList.contains('light-theme');
+
+        if (isLight) {
+            localStorage.setItem('theme', 'light');
+            button.textContent = '🌞';
+        } else {
+            localStorage.setItem('theme', 'dark');
+            button.textContent = '🌙';
+        }
+    });
+}
+
+// Обновление календаря активности
+function updateYearCalendar() {
+    const calendar = document.getElementById('yearCalendar');
+    if (!calendar) return;
+    
+    // Считаю активные дни
+    const activeDays = appState.habitsLog.length;
+    const percent = Math.min(100, Math.round((activeDays / 365) * 100));
+    
+    calendar.innerHTML = `
+        <div class="stats-card" style="width:100%;">
+            <div class="stats-number">${activeDays}</div>
+            <div class="stats-label">дней активности из 365</div>
+            <div class="progress-bar-container" style="margin:10px 0;">
+                <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+            </div>
+            <div style="color: #8A2BE2;">${percent}% года</div>
+        </div>
+    `;
 }

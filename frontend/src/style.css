@@ -476,3 +476,198 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
+
+/* Кнопка */
+.theme-toggle {
+    background: transparent;
+    border: 1px solid #a855f7;
+    color: #a855f7;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Светлая тема*/
+
+body.light-theme {
+    background: #f6f3ff;
+    color: #2d1b4e;
+}
+
+/* Главный контейнер */
+body.light-theme .mobile-app {
+    background: linear-gradient(180deg, #ffffff 0%, #f3e8ff 100%);
+}
+
+/* Основные блоки */
+body.light-theme .main-block {
+    background: #ffffff;
+    border: 2px solid #c084fc;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+}
+
+/* Инпуты */
+body.light-theme .input-field,
+body.light-theme textarea {
+    background: #f3f0ff;
+    color: #2d1b4e;
+    border: 2px solid #ddd;
+}
+
+/* Заметки */
+body.light-theme .note-item {
+    background: #ffffff;
+    border: 2px solid #c084fc;
+}
+
+body.light-theme .note-content {
+    color: #444;
+}
+
+/* Привычки */
+body.light-theme .habit-item {
+    background: #ffffff;
+    border: 2px solid #c084fc;
+}
+
+body.light-theme .habit-value {
+    background: #f3f0ff;
+    color: #6d28d9;
+}
+
+/* Статистика */
+body.light-theme .stats-card {
+    background: #ffffff;
+    border: 2px solid #c084fc;
+}
+
+body.light-theme .stats-number {
+    color: #7c3aed;
+}
+
+body.light-theme .stats-label {
+    color: #6b21a8;
+}
+
+/* Дни недели */
+body.light-theme .day-btn {
+    background: #e9d5ff;
+    color: #4c1d95;
+    border: 2px solid #c084fc;
+}
+
+body.light-theme .day-btn.active {
+    background: #7c3aed;
+    color: #fff;
+}
+
+/* Заметки за день */
+body.light-theme .day-notes {
+    background: #ffffff;
+    border: 2px solid #c084fc;
+}
+
+body.light-theme .day-note-item {
+    background: #f3f0ff;
+    border: 2px solid #ddd;
+}
+
+/* Навигация */
+body.light-theme .nav-item {
+    color: #888;
+}
+
+body.light-theme .nav-item.active {
+    color: #7c3aed;
+}
+
+/* Профиль */
+body.light-theme .avatar-section h2 {
+    color: #2d1b4e;
+}
+body.light-theme .form-group label {
+    color: #4c1d95;
+}
+
+/* Заметки */
+body.light-theme .note-title {
+    color: #7c3aed;
+}
+body.light-theme .note-content li {
+    color: #2d1b4e;
+}
+
+/* Привычки */
+body.light-theme .habit-name {
+    color: #4c1d95;
+}
+body.light-theme .today-label,
+body.light-theme .today-date {
+    color: #4c1d95;
+}
+
+.calendar-grid {
+    width: 100%;
+    margin-top: 10px;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.calendar-grid .stats-card {
+    padding: 15px 10px;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar-grid .stats-number {
+    font-size: 32px;
+    margin-bottom: 2px;
+    line-height: 1.2;
+    text-align: center;
+    width: 100%;
+}
+
+.calendar-grid .stats-label {
+    font-size: 14px;      
+    text-align: center;
+    width: 100%;
+}
+
+.calendar-grid .progress-bar-container {
+    margin: 8px auto;
+    height: 8px;
+    width: 90%;
+    max-width: 300px;
+}
+
+.calendar-grid div[style*="color: #8A2BE2"] {
+    font-size: 18px;
+    margin-top: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.calendar-day:hover {
+    transform: scale(1.1);
+}
+/* Уровни активности */
+.level-0 { background: #2d2d42; color: #666; }
+.level-1 { background: #4a1d6d; color: #fff; }
+.level-2 { background: #6a2a8f; color: #fff; }
+.level-3 { background: #8a3ab9; color: #fff; }
+.level-4 { background: #aa4ae6; color: #fff; }
