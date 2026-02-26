@@ -10,9 +10,7 @@ let appState = {
     habits: {
         water: { value: 0, unit: 'л', total: 0, today: 0 },
         sport: { value: 0, unit: 'мин', total: 0, today: 0 },
-        reading: { value: 0, unit: 'мин', total: 0, today: 0 },
-        sleep: { value: 0, unit: 'ч', total: 0, today: 0 },    // Новая привычка
-        walk: { value: 0, unit: 'мин', total: 0, today: 0 }    // Новая привычка
+        reading: { value: 0, unit: 'мин', total: 0, today: 0 }
     },
     dayNotes: [],
     streakDays: 0,
@@ -20,8 +18,7 @@ let appState = {
     currentDate: '',
     currentFullDate: '',
     listType: 'bullet',
-    lastActiveDate: '',
-    theme: 'dark' // dark или light
+    lastActiveDate: ''
 };
 
 // Дни недели
@@ -79,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     loadState();
-    applyTheme();
     checkDateChange();
     renderWeekDays();
     initNavigation();
@@ -87,12 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initNotes();
     initHabits();
     initStats();
-    initThemeToggle();
     updateTodayDate();
     updateStatsNumbers();
     renderNotes();
     updateDayNotes();
-    updateProgressBars();
 });
 
 // Загружаю из localStorage
@@ -118,10 +112,6 @@ function checkDateChange() {
         appState.habits.sport.value = 0;
         appState.habits.reading.today = 0;
         appState.habits.reading.value = 0;
-        appState.habits.sleep.today = 0;   // Сброс для сна
-        appState.habits.sleep.value = 0;
-        appState.habits.walk.today = 0;    // Сброс для прогулки
-        appState.habits.walk.value = 0;
         
         const last = new Date(appState.lastActiveDate);
         const current = new Date(appState.currentFullDate);
@@ -255,26 +245,6 @@ function initProfile() {
     });
 }
 
-// Переключение темы
-function initThemeToggle() {
-    const themeBtn = document.getElementById('themeToggleBtn');
-    if (themeBtn) {
-        themeBtn.textContent = appState.theme === 'dark' ? '☀️ Светлая тема' : '🌙 Тёмная тема';
-        
-        themeBtn.addEventListener('click', () => {
-            appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
-            applyTheme();
-            themeBtn.textContent = appState.theme === 'dark' ? '☀️ Светлая тема' : '🌙 Тёмная тема';
-            saveState();
-        });
-    }
-}
-
-// Применяю тему
-function applyTheme() {
-    document.body.className = appState.theme === 'dark' ? 'dark-theme' : 'light-theme';
-}
-
 // Заметки с проверкой на пустые поля
 function initNotes() {
     const typeBtns = document.querySelectorAll('.list-type-selector .btn-outline');
@@ -323,7 +293,7 @@ function renderNotes() {
     const list = document.getElementById('notesList');
     
     if (appState.notes.length === 0) {
-        list.innerHTML = '<div class="note-item" style="text-align: center; color: var(--text-muted);">Нет заметок</div>';
+        list.innerHTML = '<div class="note-item" style="text-align: center; color: #666;">Нет заметок</div>';
         return;
     }
     
@@ -418,20 +388,11 @@ function initHabits() {
                 appState.habits.reading.value += 5;
                 appState.habits.reading.today += 5;
                 appState.habits.reading.total += 5;
-            } else if (habit === 'sleep') {           // Новая привычка
-                appState.habits.sleep.value += 1;
-                appState.habits.sleep.today += 1;
-                appState.habits.sleep.total += 1;
-            } else if (habit === 'walk') {            // Новая привычка
-                appState.habits.walk.value += 15;
-                appState.habits.walk.today += 15;
-                appState.habits.walk.total += 15;
             }
             
             updateHabitsDisplay();
             saveState();
             updateStatsNumbers();
-            updateProgressBars();
             
             return false;
         };
@@ -455,17 +416,6 @@ function updateHabitsDisplay() {
     
     document.getElementById('readingValue').innerHTML = `${appState.habits.reading.value} мин`;
     document.getElementById('readingTotal').innerHTML = `Всего сегодня: ${appState.habits.reading.today} мин`;
-    
-    // Отображение для новых привычек
-    const sleepValue = document.getElementById('sleepValue');
-    const sleepTotal = document.getElementById('sleepTotal');
-    if (sleepValue) sleepValue.innerHTML = `${appState.habits.sleep.value} ч`;
-    if (sleepTotal) sleepTotal.innerHTML = `Всего сегодня: ${appState.habits.sleep.today} ч`;
-    
-    const walkValue = document.getElementById('walkValue');
-    const walkTotal = document.getElementById('walkTotal');
-    if (walkValue) walkValue.innerHTML = `${appState.habits.walk.value} мин`;
-    if (walkTotal) walkTotal.innerHTML = `Всего сегодня: ${appState.habits.walk.today} мин`;
 }
 
 // Статистика с проверкой на пустую заметку
@@ -475,9 +425,7 @@ function initStats() {
             document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             appState.selectedDay = e.target.dataset.day;
-            const fullDate = e.target.dataset.fullDate;
             updateDayNotes();
-            showDayDetails(fullDate);
         }
     });
     
@@ -511,48 +459,6 @@ function initStats() {
     updateDayNotes();
 }
 
-// Показываю детали за выбранный день
-function showDayDetails(fullDate) {
-    const detailsBlock = document.getElementById('dayDetails');
-    const header = document.getElementById('dayDetailsHeader');
-    const content = document.getElementById('dayDetailsContent');
-    
-    if (!detailsBlock || !header || !content) return;
-    
-    const [year, month, day] = fullDate.split('-');
-    const displayDate = `${day}.${month}.${year}`;
-    
-    // Проверяю, есть ли сохраненные данные за этот день
-    // В реальном проекте нужно хранить историю по дням
-    // Пока показываем текущие значения
-    header.innerHTML = `Прогресс за ${displayDate}`;
-    
-    content.innerHTML = `
-        <div class="day-detail-item">
-            <div class="detail-habit"><span class="habit-icon">💧</span> Вода</div>
-            <div class="detail-value">${appState.habits.water.today.toFixed(1)} л</div>
-        </div>
-        <div class="day-detail-item">
-            <div class="detail-habit"><span class="habit-icon">🏃</span> Спорт</div>
-            <div class="detail-value">${appState.habits.sport.today} мин</div>
-        </div>
-        <div class="day-detail-item">
-            <div class="detail-habit"><span class="habit-icon">📚</span> Чтение</div>
-            <div class="detail-value">${appState.habits.reading.today} мин</div>
-        </div>
-        <div class="day-detail-item">
-            <div class="detail-habit"><span class="habit-icon">😴</span> Сон</div>
-            <div class="detail-value">${appState.habits.sleep.today} ч</div>
-        </div>
-        <div class="day-detail-item">
-            <div class="detail-habit"><span class="habit-icon">🚶</span> Прогулка</div>
-            <div class="detail-value">${appState.habits.walk.today} мин</div>
-        </div>
-    `;
-    
-    detailsBlock.style.display = 'block';
-}
-
 // Обновляю заметки за день
 function updateDayNotes() {
     const list = document.getElementById('dayNotesList');
@@ -569,7 +475,7 @@ function updateDayNotes() {
     const notesForDay = appState.dayNotes.filter(n => n.fullDate === fullDate);
     
     if (notesForDay.length === 0) {
-        list.innerHTML = '<div class="day-note-item" style="text-align: center; color: var(--text-muted);">Нет заметок за этот день</div>';
+        list.innerHTML = '<div class="day-note-item" style="text-align: center; color: #666;">Нет заметок за этот день</div>';
         return;
     }
     
@@ -602,59 +508,11 @@ function updateStatsNumbers() {
     document.getElementById('totalSport').innerHTML = appState.habits.sport.total + ' мин';
     document.getElementById('totalReading').innerHTML = appState.habits.reading.total + ' мин';
     
-    // Новые поля в статистике
-    const totalSleep = document.getElementById('totalSleep');
-    const totalWalk = document.getElementById('totalWalk');
-    if (totalSleep) totalSleep.innerHTML = appState.habits.sleep.total + ' ч';
-    if (totalWalk) totalWalk.innerHTML = appState.habits.walk.total + ' мин';
-    
     const totalActions = Math.floor(
         (appState.habits.water.total / 0.5) + 
         (appState.habits.sport.total / 10) + 
         (appState.habits.reading.total / 5) + 
-        appState.habits.sleep.total +
-        (appState.habits.walk.total / 15) +
         appState.notes.length
     );
     document.getElementById('totalActions').innerHTML = totalActions;
-}
-
-// Обновляю прогресс-бары
-function updateProgressBars() {
-    const container = document.getElementById('progressBars');
-    if (!container) return;
-    
-    // Максимальные значения для шкалы (можно сделать настраиваемыми)
-    const maxValues = {
-        water: 2,      // 2 литра в день
-        sport: 30,     // 30 минут
-        reading: 20,   // 20 минут
-        sleep: 8,      // 8 часов
-        walk: 30       // 30 минут
-    };
-    
-    const habits = [
-        { icon: '💧', name: 'Вода', value: appState.habits.water.today, max: maxValues.water, unit: 'л' },
-        { icon: '🏃', name: 'Спорт', value: appState.habits.sport.today, max: maxValues.sport, unit: 'мин' },
-        { icon: '📚', name: 'Чтение', value: appState.habits.reading.today, max: maxValues.reading, unit: 'мин' },
-        { icon: '😴', name: 'Сон', value: appState.habits.sleep.today, max: maxValues.sleep, unit: 'ч' },
-        { icon: '🚶', name: 'Прогулка', value: appState.habits.walk.today, max: maxValues.walk, unit: 'мин' }
-    ];
-    
-    let html = '';
-    habits.forEach(habit => {
-        const percent = Math.min(100, Math.round((habit.value / habit.max) * 100));
-        html += `
-            <div class="progress-item">
-                <span class="progress-icon">${habit.icon}</span>
-                <span class="progress-label">${habit.name}</span>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-fill" style="width: ${percent}%"></div>
-                </div>
-                <span class="progress-value">${habit.value.toFixed(1)}/${habit.max} ${habit.unit}</span>
-            </div>
-        `;
-    });
-    
-    container.innerHTML = html;
 }
